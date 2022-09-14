@@ -17,7 +17,7 @@ contract PromiseLand is ERC721URIStorage {
 
     mapping(uint256 => MarketItem) private idToMarketItem;
     mapping(uint256 => mapping(address => bool)) upVoteList;
-	mapping(uint256 => mapping(address => bool)) downVoteList;
+    mapping(uint256 => mapping(address => bool)) downVoteList;
 
     struct MarketItem {
         uint256 tokenId;
@@ -25,7 +25,7 @@ contract PromiseLand is ERC721URIStorage {
         address payable owner;
         uint256 price;
         uint256 upvotes;
-		uint256 downvotes;
+        uint256 downvotes;
         bool sold;
     }
 
@@ -73,9 +73,7 @@ contract PromiseLand is ERC721URIStorage {
     }
 
     function nftUpVoted(uint256 tokenId) public returns (bool) {
-        if(
-            !upVoteList[tokenId][msg.sender]
-        ) {
+        if (!upVoteList[tokenId][msg.sender]) {
             upVoteList[tokenId][msg.sender] = true;
             idToMarketItem[tokenId].upvotes += 1;
             return true;
@@ -84,11 +82,8 @@ contract PromiseLand is ERC721URIStorage {
         }
     }
 
-
     function nftDownVoted(uint256 tokenId) public returns (bool) {
-        if(
-            !downVoteList[tokenId][msg.sender]
-        ) {
+        if (!downVoteList[tokenId][msg.sender]) {
             downVoteList[tokenId][msg.sender] = true;
             idToMarketItem[tokenId].upvotes += 1;
             return true;
@@ -109,6 +104,8 @@ contract PromiseLand is ERC721URIStorage {
             payable(msg.sender),
             payable(address(this)),
             price,
+            0,
+            0,
             false
         );
 
@@ -118,6 +115,8 @@ contract PromiseLand is ERC721URIStorage {
             msg.sender,
             address(this),
             price,
+            0,
+            0,
             false
         );
     }
