@@ -16,12 +16,16 @@ contract PromiseLand is ERC721URIStorage {
     address payable owner;
 
     mapping(uint256 => MarketItem) private idToMarketItem;
+    mapping(uint256 => mapping(address => bool)) upVoteList;
+	mapping(uint256 => mapping(address => bool)) downVoteList;
 
     struct MarketItem {
         uint256 tokenId;
         address payable seller;
         address payable owner;
         uint256 price;
+        uint256 upvotes;
+		uint256 downvotes;
         bool sold;
     }
 
@@ -30,6 +34,8 @@ contract PromiseLand is ERC721URIStorage {
         address seller,
         address owner,
         uint256 price,
+        uint256 upvotes,
+        uint256 downvotes,
         bool sold
     );
 
@@ -64,6 +70,31 @@ contract PromiseLand is ERC721URIStorage {
         _setTokenURI(newTokenId, tokenURI);
         createMarketItem(newTokenId, price);
         return newTokenId;
+    }
+
+    function nftUpVoted(uint256 tokenId) public returns (bool) {
+        if(
+            !upVoteList[tokenId][msg.sender]
+        ) {
+            upVoteList[tokenId][msg.sender] = true;
+            idToMarketItem[tokenId].upvotes += 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    function nftDownVoted(uint256 tokenId) public returns (bool) {
+        if(
+            !downVoteList[tokenId][msg.sender]
+        ) {
+            downVoteList[tokenId][msg.sender] = true;
+            idToMarketItem[tokenId].upvotes += 1;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function createMarketItem(uint256 tokenId, uint256 price) private {
@@ -110,7 +141,6 @@ contract PromiseLand is ERC721URIStorage {
         _transfer(msg.sender, address(this), tokenId);
     }
 
-    /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
     function createMarketSale(uint256 tokenId) public payable {
         uint256 price = idToMarketItem[tokenId].price;
