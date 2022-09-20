@@ -7,9 +7,7 @@ async function main() {
   const [deployer] = await ethers.getSigners();
 
   //Get the NFTMarketplace smart contract object and deploy it
-  const PromiseLand = await hre.ethers.getContractFactory(
-    "PromiseLandMarketplace"
-  );
+  const PromiseLand = await hre.ethers.getContractFactory("PromiseLand");
   const promiseLand = await PromiseLand.deploy();
 
   await promiseLand.deployed();

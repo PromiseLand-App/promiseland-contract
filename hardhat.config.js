@@ -9,7 +9,7 @@ module.exports = {
     //  unused configuration commented out for now
     mumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: process.env.PRIVATE_KEY,
     },
   },
   solidity: {
