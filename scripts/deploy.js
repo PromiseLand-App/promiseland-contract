@@ -22,7 +22,7 @@ async function main() {
 
   //This writes the ABI and address to the marketplace.json
   //This data is then used by frontend files to connect with the smart contract
-  fs.writeFileSync("./src/PromiseLand.json", JSON.stringify(data));
+  fs.writeFileSync("./data/PromiseLand.json", JSON.stringify(data));
 }
 
 main()
