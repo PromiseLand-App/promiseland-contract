@@ -2,18 +2,19 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/common/ERC2981.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 // import "hardhat/console.sol";
 
-contract PromiseLand is ERC721URIStorage {
-
+contract PromiseLand is ERC721URIStorage, ERC2981 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
 
-    uint256 listingPrice = 0.0025 ether;
+    uint256 listingPrice = 0.025 ether;
     address payable owner;
 
     mapping(uint256 => MarketItem) private idToMarketItem;
@@ -42,6 +43,26 @@ contract PromiseLand is ERC721URIStorage {
 
     constructor() ERC721("PromiseLand Tokens", "PLT") {
         owner = payable(msg.sender);
+        _setDefaultRoyalty(msg.sender, 100);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC721, ERC2981)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
+
+    function _burn(uint256 tokenId) internal virtual override {
+        super._burn(tokenId);
+        _resetTokenRoyalty(tokenId);
+    }
+
+    function burnNFT(uint256 tokenId) public {
+        _burn(tokenId);
     }
 
     /* Updates the listing price of the contract */
@@ -59,16 +80,18 @@ contract PromiseLand is ERC721URIStorage {
     }
 
     /* Mints a token and lists it in the marketplace */
-    function createToken(string memory tokenURI, uint256 price)
-        public
-        payable
-        returns (uint256)
-    {
+    function createToken(
+        string memory tokenURI,
+        uint256 price,
+        address royaltyReceiver,
+        uint96 feeNumerator
+    ) public payable returns (uint256) {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
 
         _mint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, tokenURI);
+        _setTokenRoyalty(newTokenId, royaltyReceiver, feeNumerator);
         createMarketItem(newTokenId, price);
         return newTokenId;
     }
