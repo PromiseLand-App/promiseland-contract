@@ -43,7 +43,7 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
 
     constructor() ERC721("PromiseLand Tokens", "PLT") {
         owner = payable(msg.sender);
-        _setDefaultRoyalty(msg.sender, 100);
+        _setDefaultRoyalty(msg.sender, 500);
     }
 
     function supportsInterface(bytes4 interfaceId)
