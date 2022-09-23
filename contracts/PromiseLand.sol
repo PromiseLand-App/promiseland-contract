@@ -17,6 +17,8 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
     uint256 listingPrice = 0.025 ether;
     uint256 likingPrice = 0.01 ether;
     address payable owner;
+    address payable creator;
+    address payable seller;
     address payable contractOwner;
 
     mapping(uint256 => MarketItem) private idToMarketItem;
@@ -27,23 +29,25 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
         uint256 tokenId;
         address payable creator;
         address payable owner;
+        address payable seller;
         uint256 price;
         uint256 likes;
         uint256 dislikes;
-        bool sold;
+        bool selling;
     }
 
     event MarketItemCreated(
         uint256 indexed tokenId,
         address creator,
         address owner,
+        address seller,
         uint256 price,
         uint256 likes,
         uint256 dislikes,
-        bool sold
+        bool selling
     );
 
-    constructor() ERC721("PromiseLand Tokens", "PLT") {
+    constructor() ERC721("PromiseLand", "PL") {
         contractOwner = payable(msg.sender);
         _setDefaultRoyalty(msg.sender, 500);
     }
@@ -73,6 +77,7 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
             owner == msg.sender,
             "Only nft owner can update listing price."
         );
+        
         listingPrice = _listingPrice;
     }
 
@@ -81,10 +86,9 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
         return listingPrice;
     }
 
-    /* Mints a token and lists it in the marketplace */
+    /* Mints a nft token */
     function createToken(
         string memory tokenURI,
-        uint256 price,
         address royaltyReceiver,
         uint96 feeNumerator
     ) public payable returns (uint256) {
@@ -94,45 +98,35 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
         _mint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, tokenURI);
         _setTokenRoyalty(newTokenId, royaltyReceiver, feeNumerator);
-        createMarketItem(newTokenId, price);
-        return newTokenId;
-    }
 
-    function likeNft(uint256 tokenId) public returns (bool) {
-        if (!likeList[tokenId][msg.sender]) {
-            likeList[tokenId][msg.sender] = true;
-            idToMarketItem[tokenId].likes += 1;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function dislikeNft(uint256 tokenId) public returns (bool) {
-        if (!dislikeList[tokenId][msg.sender]) {
-            dislikeList[tokenId][msg.sender] = true;
-            idToMarketItem[tokenId].dislikes += 1;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function createMarketItem(uint256 tokenId, uint256 price) private {
-        require(price > 0, "Price must be at least 1 wei");
-        require(
-            msg.value == listingPrice,
-            "Price must be equal to listing price"
-        );
-
-        idToMarketItem[tokenId] = MarketItem(
-            tokenId,
+         idToMarketItem[newTokenId] = MarketItem(
+            newTokenId,
             payable(msg.sender),
-            payable(address(this)),
-            price,
+            payable(msg.sender),
+            0,
             0,
             0,
             false
+        );
+        return newTokenId;
+    }
+
+
+    /* list the nft token to marketplace*/
+    function createMarketItem(uint256 tokenId, uint256 price) private {
+        require(price > 0, "Price must be at least 1 wei");
+        require(
+                idToMarketItem[tokenId].owner == msg.sender,
+                "Only item owner can perform this operation"
+            );
+        idToMarketItem[tokenId] = MarketItem(
+            tokenId,
+            payable(msg.sender),
+            payable(msg.sender),
+            price,
+            0,
+            0,
+            true
         );
 
         _transfer(msg.sender, address(this), tokenId);
@@ -143,7 +137,7 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
             price,
             0,
             0,
-            false
+            true
         );
     }
 
@@ -157,7 +151,7 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
             msg.value == listingPrice,
             "Price must be equal to listing price"
         );
-        idToMarketItem[tokenId].sold = false;
+        idToMarketItem[tokenId].selling = false;
         idToMarketItem[tokenId].price = price;
         idToMarketItem[tokenId].creator = payable(msg.sender);
         idToMarketItem[tokenId].owner = payable(address(this));
@@ -246,4 +240,27 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
         }
         return items;
     }
+
+
+
+    function nftliked(uint256 tokenId) public returns (bool) {
+        if (!likeList[tokenId][msg.sender]) {
+            likeList[tokenId][msg.sender] = true;
+            idToMarketItem[tokenId].likes += 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function dislikeNft(uint256 tokenId) public returns (bool) {
+        if (!dislikeList[tokenId][msg.sender]) {
+            dislikeList[tokenId][msg.sender] = true;
+            idToMarketItem[tokenId].dislikes += 1;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
