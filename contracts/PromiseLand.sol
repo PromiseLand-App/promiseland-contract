@@ -158,7 +158,7 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
     function getNftLikes (uint256 tokenId) public view returns (uint256) {
          return idToMarketItem[tokenId].likes;
     }
-    
+
     function getNftDislikes (uint256 tokenId) public view returns (uint256) {
          return idToMarketItem[tokenId].dislikes;
     }
@@ -212,6 +212,12 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
         }
         return items;
     }
+
+        /* Returns the Nft by Id */
+    function fetchNftById(uint256 tokenId) public view returns (MarketItem memory) {
+        return idToMarketItem[tokenId];
+    }
+
 
         /* Returns all created items */
     function fetchAllNfts() public view returns (MarketItem[] memory) {
