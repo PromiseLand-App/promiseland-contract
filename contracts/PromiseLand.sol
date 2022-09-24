@@ -237,7 +237,7 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
 
         MarketItem[] memory items = new MarketItem[](itemCount);
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].owner == msg.sender) {
+            if (idToMarketItem[i + 1].owner == userAddress) {
                 uint256 currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];
                 items[currentIndex] = currentItem;
@@ -248,20 +248,20 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
     }
 
     /* Returns only items a user has created */
-    function fetchUserCreatedNfts() public view returns (MarketItem[] memory) {
+    function fetchUserCreatedNfts(address userAddress) public view returns (MarketItem[] memory) {
         uint256 totalItemCount = _tokenIds.current();
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender) {
+            if (idToMarketItem[i + 1].creator == userAddress) {
                 itemCount += 1;
             }
         }
 
         MarketItem[] memory items = new MarketItem[](itemCount);
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToMarketItem[i + 1].creator == msg.sender) {
+            if (idToMarketItem[i + 1].creator == userAddress) {
                 uint256 currentId = i + 1;
                 MarketItem storage currentItem = idToMarketItem[currentId];
                 items[currentIndex] = currentItem;
