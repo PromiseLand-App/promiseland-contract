@@ -155,6 +155,14 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
         payable(address(this)).transfer(likingPrice);
     }
 
+    function getNftLikes (uint256 tokenId) public view returns (uint256) {
+         return idToMarketItem[tokenId].likes;
+    }
+    
+    function getNftDislikes (uint256 tokenId) public view returns (uint256) {
+         return idToMarketItem[tokenId].dislikes;
+    }
+
     /* allows someone to resell a token they have purchased */
     function resellToken(uint256 tokenId, uint256 price) public payable {
         require(
