@@ -71,16 +71,12 @@ contract PromiseLand is ERC721URIStorage, ERC2981 {
 
     /* Mints a nft token */
     function createToken(
-        string memory tokenURI,
-        address royaltyReceiver,
-        uint96 feeNumerator
+        string memory tokenURI
     ) public payable returns (uint256) {
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
-
         _mint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, tokenURI);
-        _setTokenRoyalty(newTokenId, royaltyReceiver, feeNumerator);
 
          idToMarketItem[newTokenId] = MarketItem(
             newTokenId,
