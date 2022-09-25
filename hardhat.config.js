@@ -7,8 +7,22 @@ module.exports = {
       chainId: 1337,
     },
     //  unused configuration commented out for now
-    mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
+    // mumbai: {
+    //   url: "https://rpc-mumbai.maticvigil.com",
+    //   accounts: [process.env.PRIVATE_KEY],
+    // },
+    // matic: {
+    //   url: "https://rpc-mumbai.maticvigil.com",
+    //   accounts: [
+    //     process.env.PRIVATE_KEY
+    //   ],
+    // },
+    // optimism: {
+    //   url: "https://mainnet.optimism.io",
+    //   accounts: [process.env.PRIVATE_KEY],
+    // },
+    goerli: {
+      url: "https://rpc.ankr.com/eth_goerli",
       accounts: [process.env.PRIVATE_KEY],
     },
   },

@@ -12,6 +12,8 @@ async function main() {
 
   await promiseLand.deployed();
 
+  console.log("PromiseLand deployed to:", promiseLand.address);
+
   //Pull the address and ABI out while you deploy, since that will be key in interacting with the smart contract later
   const data = {
     address: promiseLand.address,
