@@ -23,11 +23,11 @@ module.exports = {
     // },
     goerli: {
       url: "https://rpc.ankr.com/eth_goerli",
-      accounts: [process.env.PRIVATE_KEY],
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
   },
   solidity: {
-    version: "0.8.4",
+    version: "0.8.14",
     settings: {
       optimizer: {
         enabled: true,
