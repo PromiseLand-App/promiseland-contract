@@ -7,10 +7,10 @@ module.exports = {
       chainId: 1337,
     },
     //  unused configuration commented out for now
-    // mumbai: {
-    //   url: "https://rpc-mumbai.maticvigil.com",
-    //   accounts: [process.env.PRIVATE_KEY],
-    // },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com",
+      accounts: [process.env.PRIVATE_KEY],
+    },
     // matic: {
     //   url: "https://rpc-mumbai.maticvigil.com",
     //   accounts: [
@@ -21,10 +21,10 @@ module.exports = {
     //   url: "https://mainnet.optimism.io",
     //   accounts: [process.env.PRIVATE_KEY],
     // },
-    goerli: {
-      url: "https://rpc.ankr.com/eth_goerli",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-    },
+    // goerli: {
+    //   url: "https://rpc.ankr.com/eth_goerli",
+    //   accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+    // },
   },
   solidity: {
     version: "0.8.14",
